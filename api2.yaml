@@ -1,0 +1,84 @@
+openapi: 3.1.0
+info:
+  title: Сервис-Ориентированная Архитектура
+  description: Лабораторная работа №1
+  version: 1.0.0
+tags:
+  - name: Extension
+    description: Дополнительные операции
+paths:
+  /route/calculate/length/{id1}/{id2}:
+    get:
+      tags:
+        - Extension
+      summary: рассчитать длину маршрута из города с id=id1 в город с id=id2
+      description: рассчитать длину маршрута из города с id=id1 в город с id=id2
+      parameters:
+        - description: id1
+          in: path
+          name: id1
+          required: true
+          schema:
+            type: integer
+            format: id1
+          example: 1
+        - description: id2
+          in: path
+          name: id2
+          required: true
+          schema:
+            type: integer
+            format: id2
+          example: 2
+      responses:
+        "200":
+          description: Результат получен
+          content:
+            application/xml:
+              schema:
+                type: integer
+                format: float
+              example: 100
+        "400":
+          description: Невалидный запрос
+          content:
+            application/xml:
+              schema:
+                $ref: "./api.yaml#/components/schemas/Error"
+              example:
+                code: 400
+                message: Bad request
+        "404":
+          description: Элемент не найден
+          content:
+            application/xml:
+              schema:
+                $ref: "./api.yaml#/components/schemas/Error"
+              example:
+                code: 404
+                message: Not Found
+  /route/calculate/between-oldest-and-newest:
+    get:
+      tags:
+        - Extension
+      summary: рассчитать длину маршрута между городом, основанным раньше остальных, и городом, основанного позже остальных
+      description: рассчитать длину маршрута между городом, основанным раньше остальных, и городом, основанного позже остальных
+      responses:
+        "200":
+          description: Результат получен
+          content:
+            application/xml:
+              schema:
+                type: integer
+                format: float
+              example: 100
+        "400":
+          description: Невалидный запрос
+          content:
+            application/xml:
+              schema:
+                $ref: "./api.yaml#/components/schemas/Error"
+              example:
+                code: 400
+                message: Bad request
+

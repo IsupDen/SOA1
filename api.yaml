@@ -1,0 +1,677 @@
+openapi: 3.1.0
+info:
+  title: Сервис-Ориентированная Архитектура
+  description: Лабораторная работа №1
+  version: 1.0.0
+tags:
+  - name: City
+    description: CRUD операции для объекта City
+  - name: Extension
+    description: Дополнительные операции
+paths:
+  /cities:
+    get:
+      tags:
+        - City
+      summary: Получить список городов
+      description: Получить список объектов City
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/orderBy"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/name"
+        - $ref: "#/components/parameters/coordinates"
+        - $ref: "#/components/parameters/creationDate"
+        - $ref: "#/components/parameters/area"
+        - $ref: "#/components/parameters/population"
+        - $ref: "#/components/parameters/metersAboveSeaLevel"
+        - $ref: "#/components/parameters/climate"
+        - $ref: "#/components/parameters/government"
+        - $ref: "#/components/parameters/standardOfLiving"
+        - $ref: "#/components/parameters/governor"
+      responses:
+        "200":
+          description: Объекты получены
+          content:
+            application/xml:
+              schema:
+                description: Список городов
+                allOf:
+                  - $ref: "#/components/schemas/City"
+                xml:
+                  name: items
+        "400":
+          description: Невалидный запрос
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 400
+                message: Bad request
+    post:
+      tags:
+        - City
+      summary: Создать город
+      description: Создаёт новый объект City
+      requestBody:
+        content:
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/CreateCityRequest"
+      responses:
+        "201":
+          description: Успешное создание
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/City"
+        "400":
+          description: Невалидный запрос
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 400
+                message: Bad request
+  /cities/{id}:
+    get:
+      tags:
+        - City
+      summary: Получить город по id
+      description: Получить объект City по id
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Объект получен
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/City"
+        "400":
+          description: Невалидный запрос
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 400
+                message: Bad request
+        "404":
+          description: Элемент не найден
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 404
+                message: Not Found
+    delete:
+      tags:
+        - City
+      summary: Удалить город по id
+      description: Удалить объект City по id
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Объект удалён
+        "400":
+          description: Невалидный запрос
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 400
+                message: Bad request
+        "404":
+          description: Элемент не найден
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 404
+                message: Not Found
+    put:
+      tags:
+        - City
+      summary: Обновить город по id
+      description: Обновить объект City по id
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        content:
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/UpdateCityRequest"
+      responses:
+        "200":
+          description: Объект изменён
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/City"
+        "400":
+          description: Невалидный запрос
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 400
+                message: Bad request
+        "404":
+          description: Элемент не найден
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 404
+                message: Not Found
+  /cities/smallest_id:
+    get:
+      tags:
+        - Extension
+      summary: Вернуть один объект с минимальным id.
+      description: Вернуть один (любой) объект, значение поля id которого является минимальным.
+      responses:
+        "200":
+          description: Объект получен
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/City"
+  /cities/count:
+    get:
+      tags:
+        - Extension
+      summary: Вернуть количество объектов, значение поля government которых больше заданного.
+      description: Вернуть количество объектов, значение поля government которых больше заданного.
+      parameters:
+        - $ref: "#/components/parameters/governmentRequired"
+      responses:
+        "200":
+          description: Объект получен
+          content:
+            application/xml:
+              schema:
+                type: integer
+              example: 5
+        "400":
+          description: Невалидный запрос
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 400
+                message: Bad request
+  /cities/name_prefix:
+    get:
+      tags:
+        - Extension
+      summary: Вернуть массив объектов, значение поля name которых начинается с заданной подстроки.
+      description: Вернуть массив объектов, значение поля name которых начинается с заданной подстроки.
+      parameters:
+        - $ref: "#/components/parameters/nameRequired"
+      responses:
+        "200":
+          description: Список объектов
+          content:
+            application/xml:
+              schema:
+                description: Список городов
+                allOf:
+                  - $ref: "#/components/schemas/City"
+                xml:
+                  name: items
+        "400":
+          description: Невалидный запрос
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 400
+                message: Bad request
+components:
+  schemas:
+    Coordinates:
+      type: object
+      description: Координаты
+      required:
+        - x
+        - y
+      properties:
+        x:
+          type: integer
+          format: int64
+          nullable: false
+          description: Координата X
+          example:
+            - 10
+        y:
+          type: number
+          format: double
+          nullable: false
+          description: Координата Y
+          example:
+            - 25.5
+    Human:
+      type: object
+      description: Человек
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          nullable: false
+          description: Имя
+          example:
+            - Денис
+    Climate:
+      type: string
+      description: Климат
+      enum:
+        - HUMIDSUBTROPICAL
+        - MEDITERRANIAN
+        - TUNDRA
+        - DESERT
+    Government:
+      type: string
+      description: Политический режим
+      enum:
+        - KLEPTOCRACY
+        - PUPPET_STATE
+        - TELLUROCRACY
+        - THEOCRACY
+        - ETHNOCRACY
+    StandardOfLiving:
+      type: string
+      description: Уровень жизни
+      enum:
+        - VERY_HIGH
+        - HIGH
+        - LOW
+        - ULTRA_LOW
+        - NIGHTMARE
+    City:
+      type: object
+      description: Город
+      required:
+        - id
+        - name
+        - coordinates
+        - creationDate
+        - area
+        - population
+        - metersAboveSeaLevel
+        - climate
+        - government
+        - standardOfLiving
+        - governor
+      properties:
+        id:
+          type: integer
+          nullable: false
+          description: ID
+          example:
+            - 1
+        name:
+          type: string
+          nullable: false
+          description: Название
+          example:
+            - Пермь
+        coordinates:
+          description: Координаты
+          nullable: false
+          $ref: "#/components/schemas/Coordinates"
+        creationDate:
+          type: string
+          format: date-time
+          nullable: false
+          description: Дата создания
+          example:
+            - 2024-01-03T14:05:12Z
+        area:
+          type: number
+          format: float
+          nullable: false
+          description: Площадь
+          example:
+            - 100.001
+        population:
+          type: integer
+          nullable: false
+          description: Население
+          example:
+            - 100000
+        metersAboveSeaLevel:
+          type: number
+          format: int64
+          nullable: false
+          description: Высота над уровнем моря
+          example:
+            - 1234
+        climate:
+          nullable: false
+          description: Климат
+          $ref: "#/components/schemas/Climate"
+        government:
+          nullable: true
+          description: Политический режим
+          $ref: "#/components/schemas/Government"
+        standardOfLiving:
+          nullable: false
+          description: Уровень жизни
+          $ref: "#/components/schemas/StandardOfLiving"
+        governor:
+          nullable: false
+          description: Правитель
+          $ref: "#/components/schemas/Human"
+    CreateCityRequest:
+      type: object
+      description: Запрос на создание города
+      required:
+        - name
+        - coordinates
+        - area
+        - population
+        - metersAboveSeaLevel
+        - climate
+        - government
+        - standardOfLiving
+        - governor
+      properties:
+        name:
+          type: string
+          nullable: false
+          description: Название
+          example:
+            - Пермь
+        coordinates:
+          description: Координаты
+          nullable: false
+          $ref: "#/components/schemas/Coordinates"
+        area:
+          type: number
+          format: float
+          nullable: false
+          description: Площадь
+          example:
+            - 100.001
+        population:
+          type: integer
+          nullable: false
+          description: Население
+          example:
+            - 100000
+        metersAboveSeaLevel:
+          type: number
+          format: int64
+          nullable: false
+          description: Высота над уровнем моря
+          example:
+            - 1234
+        climate:
+          nullable: false
+          description: Климат
+          $ref: "#/components/schemas/Climate"
+        government:
+          nullable: true
+          description: Политический режим
+          $ref: "#/components/schemas/Government"
+        standardOfLiving:
+          nullable: false
+          description: Уровень жизни
+          $ref: "#/components/schemas/StandardOfLiving"
+        governor:
+          nullable: false
+          description: Правитель
+          $ref: "#/components/schemas/Human"
+    UpdateCityRequest:
+      type: object
+      description: Запрос на обновление города
+      required:
+        - name
+        - coordinates
+        - area
+        - population
+        - metersAboveSeaLevel
+        - climate
+        - government
+        - standardOfLiving
+        - governor
+      properties:
+        name:
+          type: string
+          nullable: false
+          description: Название
+          example:
+            - Пермь
+        coordinates:
+          description: Координаты
+          nullable: false
+          $ref: "#/components/schemas/Coordinates"
+        area:
+          type: number
+          format: float
+          nullable: false
+          description: Площадь
+          example:
+            - 100.001
+        population:
+          type: integer
+          nullable: false
+          description: Население
+          example:
+            - 100000
+        metersAboveSeaLevel:
+          type: number
+          format: int64
+          nullable: false
+          description: Высота над уровнем моря
+          example:
+            - 1234
+        climate:
+          nullable: false
+          description: Климат
+          $ref: "#/components/schemas/Climate"
+        government:
+          nullable: true
+          description: Политический режим
+          $ref: "#/components/schemas/Government"
+        standardOfLiving:
+          nullable: false
+          description: Уровень жизни
+          $ref: "#/components/schemas/StandardOfLiving"
+        governor:
+          nullable: false
+          description: Правитель
+          $ref: "#/components/schemas/Human"
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          nullable: false
+          type: integer
+        message:
+          nullable: true
+          type: string
+  parameters:
+    id:
+      description: id
+      in: path
+      name: id
+      required: true
+      schema:
+        type: integer
+        format: id
+      example: 1
+    limit:
+      description: limit
+      in: query
+      name: limit
+      required: false
+      schema:
+        type: integer
+      example: 10
+    orderBy:
+      description: order
+      in: query
+      name: order_by
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - name
+            - coordinates
+            - creation_date
+            - area
+            - population
+            - meters_above_sea_level
+            - climate
+            - government
+            - standard_of_living
+            - governor
+    page:
+      description: page
+      in: query
+      name: page
+      required: false
+      schema:
+        type: integer
+      example: 2
+    name:
+      description: Название
+      in: query
+      name: name
+      required: false
+      schema:
+        type: string
+      example: Пермь
+    nameRequired:
+      description: Название
+      in: query
+      name: name
+      required: true
+      schema:
+        type: string
+      example: Пермь
+    coordinates:
+      description: Координаты
+      in: query
+      name: coordinates
+      required: false
+      schema:
+        type: string
+      example: 10:2
+    creationDate:
+      description: Дата создания
+      in: query
+      name: creation_date
+      required: false
+      schema:
+        type: string
+      example: 2024-01-03T14:05:12Z
+    area:
+      description: Площадь
+      in: query
+      name: area
+      required: false
+      schema:
+        type: integer
+        format: float
+      example: 100.1
+    population:
+      description: Население
+      in: query
+      name: population
+      required: false
+      schema:
+        type: integer
+      example: 1000
+    metersAboveSeaLevel:
+      description: Высота над уровнем моря
+      in: query
+      name: meters_above_sea_level
+      required: false
+      schema:
+        type: integer
+        format: int64
+      example: 1234
+    climate:
+      in: query
+      name: climate
+      required: false
+      description: Климат
+      schema:
+        type: string
+        enum:
+          - HUMIDSUBTROPICAL
+          - MEDITERRANIAN
+          - TUNDRA
+          - DESERT
+    government:
+      in: query
+      name: government
+      required: false
+      description: Режим правления
+      schema:
+        type: string
+        enum:
+          - KLEPTOCRACY
+          - PUPPET_STATE
+          - TELLUROCRACY
+          - THEOCRACY
+          - ETHNOCRACY
+    governmentRequired:
+      in: query
+      name: government
+      required: true
+      description: Режим правления
+      schema:
+        type: string
+        enum:
+          - KLEPTOCRACY
+          - PUPPET_STATE
+          - TELLUROCRACY
+          - THEOCRACY
+          - ETHNOCRACY
+    standardOfLiving:
+      in: query
+      name: standard_of_living
+      required: false
+      description: Уровень жизни
+      schema:
+        type: string
+        enum:
+          - VERY_HIGH
+          - HIGH
+          - LOW
+          - ULTRA_LOW
+          - NIGHTMARE
+    governor:
+      description: Правитель
+      in: query
+      name: governor
+      required: false
+      schema:
+        type: string
+      example: Денис
+
+
+
+
+
+  
